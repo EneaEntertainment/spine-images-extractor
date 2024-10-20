@@ -1,0 +1,30 @@
+{
+    "name": "spine-images-extractor",
+    "version": "1.0.0",
+    "description": "cool stuff",
+    "author": "Martin Filo",
+    "license": "DWTFYWTPL",
+    "main": "src/index.js",
+    "type": "module",
+    "scripts": {
+        "start": "electron .",
+        "build": "electron-builder",
+        "build:mac": "electron-builder --mac",
+        "build:win": "electron-builder --win",
+        "prettier": "prettier --write ."
+    },
+    "devDependencies": {
+        "electron": "^33.0.1",
+        "electron-builder": "^23.6.0",
+        "prettier": "^3.3.3"
+    },
+    "build": {
+        "appId": "sk.enea.spine-images-extractor",
+        "mac": {
+            "target": "dmg"
+        },
+        "win": {
+            "target": "nsis"
+        }
+    }
+}

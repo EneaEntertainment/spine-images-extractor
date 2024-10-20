@@ -1,0 +1,26 @@
+{
+    "folders": [
+        {
+            "path": ".",
+        },
+    ],
+    "settings": {
+        "files.exclude": {
+            "_dist": true,
+            "node_modules": true,
+            "resources": true,
+        },
+
+        "search.exclude": {
+            "_dist": true,
+            "node_modules": true,
+            "resources": true,
+            "utils": true,
+            "webpack": true,
+            "package*.json": true,
+            "tsconfig*.json": true,
+            "webpack*": true,
+            ".*.*": true,
+        },
+    },
+}

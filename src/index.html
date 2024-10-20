@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <style>
+            .hide {
+                display: none;
+            }
+        </style>
+        <title>extractor</title>
+    </head>
+    <body>
+        <button id="openJSONButton">1. Open JSON File</button>
+        <button id="openSpineButton" disabled>2. Open Spine File</button>
+        <button id="destinationFolderButton" disabled>3. Select destination folder</button>
+        <button id="goButton" disabled>GO!</button>
+        <pre id="jsonFileContent"></pre>
+        <pre id="output" class="hide">copying...</pre>
+        <script>
+            document.getElementById('openJSONButton').addEventListener('click', async () => {
+                const { jsonData, jsonFileName } = await window.electronAPI.openFileDialog();
+
+                if (!jsonFileName) return;
+
+                document.getElementById('jsonFileContent').textContent = JSON.stringify(jsonData, null, 2);
+                document.getElementById('openJSONButton').textContent = jsonFileName;
+                document.getElementById('openJSONButton').disabled = true;
+                document.getElementById('openSpineButton').disabled = false;
+            });
+
+            document.getElementById('openSpineButton').addEventListener('click', async () => {
+                const { spineFileName } = await window.electronAPI.openSpineFileDialog();
+
+                if (!spineFileName) return;
+
+                document.getElementById('openSpineButton').textContent = spineFileName;
+                document.getElementById('openSpineButton').disabled = true;
+                document.getElementById('destinationFolderButton').disabled = false;
+            });
+
+            document.getElementById('destinationFolderButton').addEventListener('click', async () => {
+                const { imagesDestionationPath } = await window.electronAPI.openFolderDialog();
+
+                if (!imagesDestionationPath) return;
+
+                document.getElementById('destinationFolderButton').textContent = imagesDestionationPath;
+                document.getElementById('destinationFolderButton').disabled = true;
+                document.getElementById('goButton').disabled = false;
+            });
+
+            document.getElementById('goButton').addEventListener('click', async () => {
+                document.getElementById('goButton').disabled = true;
+                document.getElementById('jsonFileContent').classList.add('hide');
+                document.getElementById('output').classList.remove('hide');
+
+                await window.electronAPI.startProcessing();
+
+                document.getElementById('output').textContent += '\ndone';
+            });
+        </script>
+    </body>
+</html>
