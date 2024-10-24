@@ -102,6 +102,7 @@ app.whenReady().then(() => {
 async function processFiles() {
     const skins = jsonData.skins ?? {};
     const ignoreTypes = ['boundingbox', 'path', 'point', 'clipping'];
+    const imageExtensions = ['.png', '.jpg'];
     const imagesToCopy = new Map();
 
     console.log('copying...');
@@ -128,12 +129,14 @@ async function processFiles() {
                     for (let i = start; i < start + count; i++) {
                         const paddedIndex = i.toString().padStart(digits, '0');
 
-                        imagesToCopy.set(texture + paddedIndex + '.png', true);
-                        imagesToCopy.set(texture + paddedIndex + '.jpg', true);
+                        imageExtensions.forEach((extension) => {
+                            imagesToCopy.set(texture + paddedIndex + extension, true);
+                        });
                     }
                 } else {
-                    imagesToCopy.set(texture + '.png', true);
-                    imagesToCopy.set(texture + '.jpg', true);
+                    imageExtensions.forEach((extension) => {
+                        imagesToCopy.set(texture + extension, true);
+                    });
                 }
             });
         }
