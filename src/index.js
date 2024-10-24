@@ -101,7 +101,8 @@ app.whenReady().then(() => {
 
 async function processFiles() {
     const skins = jsonData.skins ?? {};
-    const imagesToCopy = [];
+    const ignoreTypes = ['boundingbox', 'path', 'point', 'clipping'];
+    const imagesToCopy = new Map();
 
     console.log('copying...');
 
@@ -109,14 +110,36 @@ async function processFiles() {
         const attachments = skin.attachments;
 
         for (const attachmentKey in attachments) {
-            Object.keys(attachments[attachmentKey]).forEach((key) => {
-                imagesToCopy.push(key + '.png');
-                imagesToCopy.push(key + '.jpg');
+            const attachment = attachments[attachmentKey];
+
+            Object.keys(attachment).forEach((key) => {
+                const node = attachment[key];
+                const type = node.type ?? 'region';
+
+                if (ignoreTypes.indexOf(type) !== -1) {
+                    return;
+                }
+
+                const texture = node.path ?? key;
+
+                if (node.sequence) {
+                    const { count = 1, start = 0, digits = 1 } = node.sequence;
+
+                    for (let i = start; i < start + count; i++) {
+                        const paddedIndex = i.toString().padStart(digits, '0');
+
+                        imagesToCopy.set(texture + paddedIndex + '.png', true);
+                        imagesToCopy.set(texture + paddedIndex + '.jpg', true);
+                    }
+                } else {
+                    imagesToCopy.set(texture + '.png', true);
+                    imagesToCopy.set(texture + '.jpg', true);
+                }
             });
         }
     });
 
-    for (const image of imagesToCopy) {
+    for (const image of imagesToCopy.keys()) {
         const imageSource = path.resolve(imagesSourcePath, image);
 
         if (!fs.existsSync(imageSource)) continue;
